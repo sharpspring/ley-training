@@ -1,0 +1,48 @@
+{% macro deploy(mem_limit="4Gi", cpu_limit="250m") %}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: php
+  namespace: {{ namespace }}
+  labels:
+    role: php
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: php
+  template:
+    metadata:
+      labels:
+        role: php
+    spec:
+      containers:
+      - name: php
+        image: us.gcr.io/sharpspring-us/yourname-weatherapp:{{ diff_id }}
+        imagePullPolicy: Always
+        env:
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "{{ cpu_limit }}"
+            memory: "{{ mem_limit }}"
+          limits:
+            cpu: "{{ cpu_limit }}"
+            memory: "{{ mem_limit }}"
+{% endmacro %}
+{% if cluster == "staging" %}
+# Give staging smaller resources than production.
+{%- set mem_limit="100Mi" %}
+{%- set cpu_limit="100m" %}
+{% else %}
+# Give not-staging tol resources
+{%- set mem_limit="1Gi" %}
+{%- set cpu_limit="1" %}
+{% endif %}
+# We created a macro that will output the above
+{{ deploy(mem_limit=mem_limit, cpu_limit=cpu_limit) }}
+# vim:ft=ansible:

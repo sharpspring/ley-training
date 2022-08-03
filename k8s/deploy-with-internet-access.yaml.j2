@@ -1,0 +1,81 @@
+{% macro k8s_skelly_deploy(mem_limit="4Gi", cpu_limit="250m") %}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: k8s-skelly
+  labels:
+    role: k8s-skelly
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: k8s-skelly
+  template:
+    metadata:
+      labels:
+        role: k8s-skelly
+    spec:
+{% if cluster == "staging" %}
+      # The following "affinity" and "tolerations" blocks exist to schedule this
+      # container onto the "leaky" staging server. The "leaky" server has egress
+      # and ingress access to the public Internet. By default we want to
+      # restrict things running on the staging cluster to NOT have Internet
+      # access. This is because we don't want to accidentally send emails to
+      # customers, charge credit cards, etc. If you DO need Internet access, and
+      # are willing to assume the risk that that entails, then use this
+      # Deployment which has the appropriate affinity and toleration.
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: leaky
+                operator: In
+                values:
+                - "true"
+      tolerations:
+      - effect: NoSchedule
+        key: leaky
+        operator: Equal
+        value: "true"
+{% endif %}
+      containers:
+      - name: k8s-skelly
+        image: us.gcr.io/sharpspring-us/k8s-skelly:{{ diff_id }}
+        imagePullPolicy: Always
+        env:
+        - name: ILLUMINATI_MAILING_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: k8s-skelly
+              key: illuminati_mailing_address
+        - name: MEANING_OF_LIFE
+          valueFrom:
+            secretKeyRef:
+              name: k8s-skelly
+              key: meaning_of_life
+        ports:
+        - containerPort: 8888
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "{{ cpu_limit }}"
+            memory: "{{ mem_limit }}"
+          limits:
+            cpu: "{{ cpu_limit }}"
+            memory: "{{ mem_limit }}"
+{% endmacro %}
+{% if cluster == "staging" %}
+# Give staging smol resources
+{%- set mem_limit="512Mi" %}
+{%- set cpu_limit="250m" %}
+{% else %}
+# Give not-staging tol resources
+{%- set mem_limit="1Gi" %}
+{%- set cpu_limit="1" %}
+{% endif %}
+# We created a macro that will output the above
+{{ k8s_skelly_deploy(mem_limit=mem_limit, cpu_limit=cpu_limit) }}
+# vim:ft=ansible:
