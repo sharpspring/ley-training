@@ -1,4 +1,4 @@
-{% macro deploy(mem_limit="4Gi", cpu_limit="250m") %}
+{% macro deploy(mem_limit="100Mi", cpu_limit="100m") %}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -19,11 +19,11 @@ spec:
     spec:
       containers:
       - name: php
-        image: us.gcr.io/sharpspring-us/yourname-weatherapp:{{ diff_id }}
+        image: us.gcr.io/sharpspring-us/sley-weatherapp:{{ diff_id }}
         imagePullPolicy: Always
         env:
         ports:
-        - containerPort: 80
+        - containerPort: 9000
           name: http
           protocol: TCP
         resources:
