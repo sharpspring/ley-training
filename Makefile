@@ -1,6 +1,6 @@
 .PHONY: all build release
 
-repo=yourname-weatherapp
+repo=sley-weatherapp
 shorthash=`git rev-parse --short HEAD`
 base=us.gcr.io/sharpspring-us/$(repo)
 branch=$${BRANCH_NAME:-`git rev-parse --abbrev-ref HEAD`}
