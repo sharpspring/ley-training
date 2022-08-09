@@ -1,2 +1,2 @@
 # ley-training
-Lifting weights in dbz chamber
+Lifting weights in hyperbolic time chamber
