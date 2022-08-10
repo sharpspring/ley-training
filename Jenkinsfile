@@ -24,6 +24,7 @@ node("k8s") {
             // If you don't have secrets, you don't need this. But it wont break
             // anything to include it anyway.
             withRepoKey {
+                sh("sleep infinity")
                 k8s_contexts.each { cluster ->
                     template(cluster: cluster)
                     sh("kubectl --context ${cluster} apply -f ./tmp-k8s")
