@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: update-hourly
@@ -13,8 +13,6 @@ spec:
   startingDeadlineSeconds: 300
 
   schedule: "0 */1 * * *"
-  # or every 5 minutes
-  # schedule: "*/5 * * * *" 
   jobTemplate:
     spec:
       template:
@@ -22,7 +20,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: php
-            image: us.gcr.io/sharpspring-us/yourname-training:{{ diff_id }}
+            image: us.gcr.io/sharpspring-us/sley-training:{{ diff_id }}
             command:
             - php
             args:
