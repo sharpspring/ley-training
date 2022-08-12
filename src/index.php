@@ -30,7 +30,7 @@ function getLocation() {
 <?php
 foreach (getLocation() as $location => $locations) {
     echo "<tr>\n";
-    echo "    <td>$location</td>\n";
+    echo "    <td>$locations</td>\n";
     echo "</tr>\n";
 }
 ?>
@@ -39,4 +39,4 @@ foreach (getLocation() as $location => $locations) {
     </body>
 </html>
 
-?>
+
