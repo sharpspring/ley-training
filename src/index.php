@@ -17,6 +17,26 @@ function getLocation() {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-print_r(getLocation());
+?>
+<html>
+    <head>
+        <title>Weather Information</title>
+    </head>
+    <body>
+        <table border="1">
+            <tr>
+                <th>Current Weather</th>
+            </tr>
+<?php
+foreach (getLocation() as $location => $locations) {
+    echo "<tr>\n";
+    echo "    <td>$location</td>\n";
+    echo "</tr>\n";
+}
+?>
+            </tr>
+        <table>
+    </body>
+</html>
 
 ?>
