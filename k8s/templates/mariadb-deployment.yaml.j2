@@ -1,3 +1,4 @@
+{% if cluster in ("datastores-us-central1") %}
 {% macro deploy(mem_limit="4Gi", cpu_limit="250m") %}
 ---
 apiVersion: apps/v1
@@ -8,6 +9,15 @@ metadata:
   labels:
     role: mariadb
 spec:
+  affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: failure-domain.beta.kubernetes.io/zone
+          operator: In
+          values:
+          - us-central1-b
   replicas: 1
   selector:
     matchLabels:
@@ -43,8 +53,9 @@ spec:
           mountPath: /var/lib/mysql
       volumes:
       - name: mariadb-data-volume
-        persistentVolumeClaim:
-          claimName: mariadb-data
+        gcePersistentDisk:
+          pdName: sley-training-mariadb-data
+          fsType: ext4
 {% endmacro %}
 {% if cluster == "staging" %}
 # Give staging smaller resources than production.
@@ -58,3 +69,4 @@ spec:
 # We created a macro that will output the above
 {{ deploy(mem_limit=mem_limit, cpu_limit=cpu_limit) }}
 # vim:ft=ansible:
+{% endif %}
