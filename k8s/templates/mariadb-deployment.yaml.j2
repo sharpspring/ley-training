@@ -9,15 +9,6 @@ metadata:
   labels:
     role: mariadb
 spec:
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: failure-domain.beta.kubernetes.io/zone
-            operator: In
-            values:
-            - us-central1-b
   replicas: 1
   selector:
     matchLabels:
@@ -27,6 +18,15 @@ spec:
       labels:
         role: mariadb
     spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: failure-domain.beta.kubernetes.io/zone
+              operator: In
+              values:
+              - us-central1-b
       containers:
       - name: mariadb
         image: mariadb:10.3
