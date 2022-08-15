@@ -1,3 +1,4 @@
+{% if cluster in ("staging") %}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -25,3 +26,4 @@ spec:
             - php
             args:
             - /var/www/site/cronjob.php
+{% endif %}

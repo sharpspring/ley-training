@@ -1,3 +1,4 @@
+{% if cluster in ("staging") %}
 {% macro deploy(mem_limit="100mi", cpu_limit="100m") %}
 ---
 apiVersion: apps/v1
@@ -54,3 +55,4 @@ spec:
 # We created a macro that will output the above
 {{ deploy(mem_limit=mem_limit, cpu_limit=cpu_limit) }}
 # vim:ft=ansible:
+{% endif %}

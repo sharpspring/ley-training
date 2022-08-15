@@ -1,3 +1,4 @@
+{% if cluster in ("staging") %}
 ---
 apiVersion: v1
 kind: Service
@@ -18,3 +19,4 @@ spec:
   loadBalancerSourceRanges:
   - 209.251.145.16/30
   - 35.208.194.182/32
+{% endif %}
