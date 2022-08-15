@@ -10,14 +10,14 @@ metadata:
     role: mariadb
 spec:
   affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: failure-domain.beta.kubernetes.io/zone
-          operator: In
-          values:
-          - us-central1-b
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: failure-domain.beta.kubernetes.io/zone
+            operator: In
+            values:
+            - us-central1-b
   replicas: 1
   selector:
     matchLabels:
